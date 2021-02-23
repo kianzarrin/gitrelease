@@ -26,7 +26,7 @@ jobs:
 
     # Restore the application to populate the obj folder with RuntimeIdentifiers
     - name: build the solution
-      run: msbuild gitrelease.sln /m /restore /p:Configuration=Release
+      run: msbuild gitrelease.sln /m /restore /verbosity:normal /p:Configuration=Release
      
     - name: Get Version Number
       id: get_version_number
@@ -38,7 +38,8 @@ jobs:
       run: |
         $ErrorView = 'NormalView'
         $env:ASSET_FILE_NAME = "gitrelease.${{ steps.get_version_number.outputs.VERSION }}.zip"
-        $env:ASSET_FILE = "Deploy/gitrelease.${{ steps.get_version_number.outputs.VERSION }}.zip"
+        $env:ASSET_FILE = "gitrelease/bin/gitrelease.${{ steps.get_version_number.outputs.VERSION }}.zip"
+        echo "$env:ASSET_FILE"
         Compress-Archive -Path gitrelease/bin/Release/netcoreapp3.1/*.dll -DestinationPath $env:ASSET_FILE -CompressionLevel Optimal
         echo "::set-output name=ASSET_FILE::$env:ASSET_FILE"
         echo "::set-output name=ASSET_FILE_NAME::$env:ASSET_FILE_NAME"
